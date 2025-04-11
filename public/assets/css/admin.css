@@ -1,0 +1,687 @@
+html, body {
+    height: 100%;
+    overflow: hidden; /* Hindari double scrollbar */
+}
+
+.poppins-regular {
+    font-family: "Poppins", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 13px;
+    line-height: 20px;
+    color: white;
+}
+
+.poppins-semibold {
+    font-family: "Poppins", serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 22px;
+    color: white;
+}
+
+.poppins-bold {
+    font-family: "Poppins", serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 60px;
+    color: white;
+}
+
+.roboto-light {
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 12px;
+    color: white;
+}
+
+.roboto-title {
+    font-family: "Roboto", serif;
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.montserrat-light {
+    font-family: "Montserrat", serif;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.montserrat-medium {
+    font-family: "Montserrat", serif;
+    font-weight: 600;
+}
+
+/* NAVBAR ADMIN */
+
+.swal-popup {
+    border-radius: 8px; /* Rounded corners like in your image */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional shadow for depth */
+    width: 500px; /* Increase width (adjust as needed) */
+    min-height: 200px; /* Increase minimum height (adjust as needed) */
+    padding: 25px;
+}
+
+.swal-title {
+    font-size: 30px; /* Adjust font size to match your image */
+    color: #000000; /* Black text for the title, matching your image */
+    font-weight: bold; /* Bold text for emphasis */
+}
+
+.swal-confirm,
+.swal-cancel {
+    border-radius: 10px; /* Rounded corners for buttons, matching your image */
+    padding: 10px 20px; /* Adjust padding for button size */
+    font-size: 20px; /* Match button text size */
+    border: none; /* Remove the border entirely */
+    background: linear-gradient(
+        to bottom,
+        #a2d9e0,
+        #468c98
+    ); /* Apply the teal gradient to both buttons */
+    color: #000000; /* Black text for buttons, matching your image */
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    margin: 0 20px; /* Space between buttons */
+    cursor: pointer; /* Show pointer cursor on hover for better UX */
+}
+
+.swal-confirm:hover,
+.swal-cancel:hover {
+    opacity: 0.6; /* Fade on hover for interactivity */
+    background: #468c98; /* Lighter/darker gradient on hover for subtle feedback */
+}
+
+.swal2-actions {
+    display: flex; /* Ensure Flexbox is used */
+    justify-content: flex-end; /* Push buttons to the right, but we’ll use order to swap them */
+    flex-direction: row-reverse; /* Reverse the order of flex items (Cancel first, Yes second) */
+}
+
+.swal2-backdrop-blur {
+    background-color: rgba(
+        0,
+        0,
+        0,
+        0.4
+    ) !important; /* Semi-transparent overlay */
+    backdrop-filter: blur(
+        5px
+    ) !important; /* Apply blur effect to the background */
+}
+
+/* 
+  ADMIN
+  Styling sidebar admin 
+  */
+/* ADMIN */
+.container-fluid.header-admin {
+    /* Tambahkan .header-admin */
+    width: 100%;
+    background: linear-gradient(to right, #7fc7d9, #436973);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Header juga fixed */
+    top: 0;
+    left: 0;
+    z-index: 2; /* Pastikan di atas sidebar */
+}
+
+.sidebar-admin {
+    width: fit-content;
+    background-color: #f5f7fa;
+    position: fixed; /* Sidebar fixed */
+    left: 0;
+    height: calc(100vh - 67px); /* Hitung tinggi sidebar */
+    overflow-y: auto; /* Jika konten sidebar melebihi tinggi */
+    z-index: 1; /* Di bawah header */
+}
+
+.sidebar-admin a {
+    color: #000000;
+    font-family: "Roboto", serif;
+    font-weight: 500;
+    font-size: 17px;
+}
+
+.sidebar-admin .active {
+    background-color: #7fc7d9;
+    border-radius: 10px;
+    box-shadow: 0px 4px 4px #00000040;
+}
+
+.main-content {
+    padding: 20px 10px 10px 20px;
+    overflow-y: auto;
+    min-height: 100vh; /* Gunakan min-height agar bisa bertambah */
+    height: auto !important; /* Izinkan tinggi menyesuaikan konten */
+    max-height: 100vh; /* Pastikan tidak terbatas */
+    /* transition: margin-left 0.1s ease-in-out; */
+}
+
+.main-content h1 {
+    color: #0f1035;
+    text-shadow: 0px 5px 4px #00000030;
+    font-size: 3rem;
+}
+
+.circle {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: black;
+}
+
+/* Style Berita Admin */
+input[type="text"] {
+    background-color: #d9d9d9;
+    color: #4c4c4c;
+    padding: 5px 20px;
+    border-radius: 20px;
+    height: 55px;
+    width: 100%;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-logo {
+    background-color: #d9d9d9;
+    color: black;
+    border-radius: 20px;
+    height: 55px;
+    width: 55px;
+    border: none;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-left: 6px;
+}
+
+.background-card {
+    background-color: black;
+    border-radius: 25px;
+    width: 80%;
+    height: fit-content;
+    margin-bottom: 20px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.1);
+}
+
+.message-lowongan {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    background-color: #ee5219;
+    width: fit-content;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 10px;
+}
+
+
+.card-information{
+    background-color: #7fc7d9;
+    border-radius: 32px;
+    width: 100%;
+    height: fit-content;
+    padding: 10px 0px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.1);   
+}
+
+.card-img-top {
+    width: fit-content;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-lowongan,
+.card-artikel,
+.card-pengumuman {
+    background-color: #7fc7d9;
+    border-radius: 32px;
+    width: 900px;
+    height: fit-content;
+    padding: 10px 0px;
+    box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-artikel .btn,
+.card-information .btn,
+.card-lowongan .btn,
+.card-pengumuman .btn,
+.align-self-end > .btn {
+    background-color: #588996;
+    border: none;
+    color: white;
+    font-weight: 700;
+    height: fit-content;
+}
+
+.card-information img{
+    width: 18%; 
+    height: auto; 
+    object-fit: contain; 
+    border-radius: 8px;
+}
+
+.card-information a,
+.card-lowongan a,
+.card-artikel a,
+.card-pengumuman a {
+    text-decoration: none;
+    font-family: "Poppins", serif;
+    font-style: italic;
+    font-weight: 275;
+    font-size: 15px;
+    color: black;
+}
+
+.card-lowongan h2,
+.card-information h2,
+.card-artikel h2,
+.card-pengumuman h2 {
+    width: 75%;
+}
+
+.card-information .detail,
+.card-lowongan .detail,
+.card-artikel .detail,
+.card-pengumuman .detail {
+    justify-self: end;
+}
+/****************************************** PAGINATION COMPONENT *******************************************/
+
+/* Menghapus background biru */
+.pagination {
+    margin-bottom: 100px;
+}
+.custom-pagination-container {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0; /* Menghilangkan padding tambahan */
+    margin: 0 auto; /* Pusatkan jika perlu */
+    display: flex;
+    justify-content: center;
+}
+
+/* Styling utama pagination */
+.custom-pagination {
+    display: flex;
+    list-style: none;
+    padding: 10px;
+    background: #ddd;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    margin: 0; /* Hilangkan margin bawaan */
+}
+
+/* Mengatur setiap item pagination */
+.custom-pagination li {
+    margin: 0 5px;
+}
+
+/* Styling tombol angka & navigasi */
+.custom-pagination li a,
+.custom-pagination li span {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Warna untuk halaman aktif */
+.custom-pagination li.active span {
+    background: black;
+    color: white;
+}
+
+/* Warna untuk tombol disabled */
+.custom-pagination li.disabled span {
+    opacity: 0.5;
+    pointer-events: none; /* Mencegah interaksi */
+}
+
+/* Hover effect untuk tombol pagination */
+.custom-pagination li a:hover {
+    background: #bbb;
+    color: white;
+}
+
+.no-content {
+    font-size: 55px; /* Memperbesar ukuran font */
+    font-weight: bold; /* Membuat teks lebih tebal */
+    height: 200px; /* Menentukan tinggi agar bisa sejajar di tengah */
+    display: flex;
+    justify-content: center; /* Pusatkan horizontal */
+    align-items: center; /* Pusatkan vertikal */
+}
+
+
+
+.box-form label {
+    font-family: "Poppins", serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 18px;
+}
+
+.box-form {
+    background-color: #e4e4e4;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 100px;
+}
+
+.box-form input {
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.box-form input::placeholder,
+.box-form textarea::placeholder {
+    color: #00000080;
+    font-family: "Poppins", serif;
+    font-weight: 600;
+    font-style: italic;
+    font-size: 16px;
+}
+
+.box-form textarea {
+    height: 200px;
+}
+
+.box-form button,
+.main-content .btn-tambah,
+.box-form .btn-batal {
+    font-family: "Poppins", serif;
+    font-weight: 700;
+    text-align: center;
+    width: fit-content;
+    height: 42px;
+    border-radius: 8px;
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    color: white;
+}
+
+.box-form button,
+.main-content .btn-tambah {
+    background-color: #7fc7d9;
+    color: white;
+    border: 3px solid #7fc7d9;
+}
+
+.box-form button:hover,
+.main-content .btn-tambah:hover{
+    background-color: transparent;
+    color: black;
+    border: 3px solid black;
+}
+
+.box-form .btn-batal {
+    background-color: #5A6268;
+    color: white;
+    border: 3px solid #5A6268;
+}
+
+.box-form .btn-batal:hover{
+    background-color: transparent;
+    color: #5A6268;
+    border: 3px solid #5A6268;
+}
+
+#btn-edit{
+    background-color: #588996;
+    border: 3px solid #588996;
+}
+
+#btn-edit:hover{
+    background-color: transparent;
+    border: 3px solid black;
+    color: black;
+}
+
+#btn-hapus{
+    background-color: #FF0033;
+    border: 3px solid #FF0033;
+}
+
+#btn-hapus:hover{
+    background-color: transparent;
+    color: #FF0033;
+}
+
+
+input[type="file"] {
+    position: absolute;
+    z-index: -1;
+    top: 10px;
+    left: 8px;
+    font-size: 15px;
+    color: #b8b8b8;
+}
+.button-wrap {
+    position: relative;
+}
+.buttonUploadFile {
+    display: inline-block;
+    padding: 5px 8px;
+    cursor: pointer;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    font-size: 15px;
+    font-weight: bold;
+    color: #000000;
+    border: 5px solid #00000080;
+}
+
+.pills {
+    padding: 5px 12px;
+    background-color: white;
+    border: 2px solid black;
+    border-radius: 30px;
+    font-size: 9px;
+    color: #0f1035;
+    font-family: "Roboto", serif;
+    font-weight: 600;
+    align-items: center;
+    display: inline-block;
+    width: fit-content;
+    white-space: nowrap; /* Mencegah teks terpotong */
+}
+
+
+.card-perusahaan,
+.card-lowongan {
+    width: 95%;
+    padding: 10px 30px;
+    border-radius: 25px;
+    background-color: #e4e4e4;
+}
+
+.card-perusahaan-about,
+.card-lowongan-about {
+    background-color: #e4e4e4;
+    padding: 20px 30px;
+    width: 80%;
+    border-radius: 15px;
+}
+
+.card-perusahaan-about h2,
+.card-perusahaan h2,
+.card-lowongan-about h2,
+.card-lowongan h2 {
+    font-weight: 700;
+    font-size: 28px;
+}
+
+.card-perusahaan-about h3 .card-lowongan-about h3 {
+    font-weight: 600;
+    font-family: "Montserrat", serif;
+    font-size: 18px;
+}
+
+.card-perusahaan-about .pills {
+    font-size: 11px;
+}
+
+/* Tracer Study */
+
+.section-container-main,
+.questions .question-container {
+    background-color: #e4e4e4;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.section-container label {
+    font-family: "Poppins", serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.section-container input {
+    font-family: "Poppins", serif;
+    font-weight: 600;
+    font-size: 15px;
+    font-style: italic;
+    background-color: white;
+    width: 100%;
+}
+
+.floating-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: white;
+    padding: 8px;
+    height: fit-content;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 25px;
+}
+
+.floating-btn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.floating-btn:hover {
+    background-color: #2563eb;
+}
+
+.questions {
+    margin-bottom: 100px;
+}
+.question-container input {
+    width: 50%;
+}
+
+.borderless-input,
+.borderless-textarea {
+    border: none;
+    border-bottom: 1px dashed #888;
+    background: transparent;
+    width: 100%;
+    padding: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+[data-placeholder]:empty:before {
+    content: attr(data-placeholder);
+    color: gray;
+    pointer-events: none;
+}
+
+.equal-radius {
+    border-radius: 20000px;
+}
+
+/*from builder*/
+.option {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Pastikan semua elemen mulai dari kiri */
+    width: 100%;
+    background: white;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+    gap: 8px;
+}
+
+.option input[type="radio"] {
+    margin: 0;
+    flex-shrink: 0; /* Mencegah radio button berubah ukuran */
+    width: 16px; /* Ukuran tetap */
+    height: 16px; /* Ukuran tetap */
+}
+
+.option input[type="text"] {
+    flex-grow: 1;
+    padding: 10px; /* Tambahkan padding agar lebih besar */
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Tambahkan border-radius agar lebih lembut */
+    font-size: 16px; /* Perbesar ukuran font */
+    height: 40px; /* Sesuaikan tinggi */
+    min-width: 0;
+}
+
+.option select {
+    flex-grow: 0.2;
+    min-width: 180px;
+}
+
+.option button {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#form-sections {
+    max-height: 60vh; /* Batasi tinggi agar bisa scroll */
+    overflow-y: auto !important; /* Paksa scroll jika konten lebih besar */
+    display: block;
+    margin-bottom: 10px; /* Kurangi jarak bawah */
+    padding-bottom: 10px; /* Kurangi padding jika perlu */
+}
+
+.save-button-container {
+    position: relative; /* Pastikan tombol tidak melayang */
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 20px 0;
+    background: white; /* Agar tidak ketumpuk oleh elemen lain */
+}
+
+#save-form {
+    display: inline-block;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    z-index: 1000;
+}

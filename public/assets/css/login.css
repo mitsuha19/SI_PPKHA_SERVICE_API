@@ -1,0 +1,99 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #98c2f6, #e0f7ff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+.alert {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.alert-success {
+  background-color: #28a745;
+}
+
+h2 {
+  font-family: 'Poppins', sans-serif;
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: none;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 15px 40px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  box-sizing: border-box;
+  font-size: 14px;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.form-group input::placeholder {
+  color: #aaa;
+}
+
+.form-group .icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+}
+
+.btn {
+  width: 100%;
+  background: linear-gradient(90deg, #52a7ff, #61d0ff);
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background: linear-gradient(90deg, #439bff, #5ab4ff);
+}
+
+.help-block {
+  font-size: 14px;
+  color: red;
+  margin-top: -10px;
+}
