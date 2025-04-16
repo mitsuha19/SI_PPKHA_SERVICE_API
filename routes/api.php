@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,3 +14,6 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('/external-token', [AuthController::class, 'getExternalApiToken']);
+
+Route::apiResource('/pengumuman', PengumumanController::class);
+Route::get('/lampiran/{id}/{filename}', [PengumumanController::class, 'getLampiran']);

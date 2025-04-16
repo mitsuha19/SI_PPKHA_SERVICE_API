@@ -1,0 +1,135 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Models\Pengumuman;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\PengumumanResource;
+
+class PengumumanController extends Controller
+{
+    public function index()
+    {
+        $pengumuman = Pengumuman::latest()->get();
+
+        return new PengumumanResource(true, "List Data Pengumuman", $pengumuman);
+    }
+
+    public function getLampiran($id, $filename)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+        $lampiran = json_decode($pengumuman->lampiran, true) ?? [];
+
+        foreach ($lampiran as $file) {
+            if ($file['nama_file'] === $filename) {
+                $decoded = base64_decode($file['isi_base64']);
+
+                return response($decoded, 200)
+                    ->header('Content-Type', $file['tipe'])
+                    ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
+            }
+        }
+
+        return response()->json(['message' => 'File tidak ditemukan'], 404);
+    }
+
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'judul_pengumuman' => 'required|string',
+            'deskripsi_pengumuman' => 'required|string',
+            'lampiran.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $lampiranPaths = [];
+
+        if ($request->hasFile('lampiran')) {
+            foreach ($request->file('lampiran') as $file) {
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $path = $file->move(public_path('lampiran_pengumuman'), $filename); // ⬅️ langsung ke public/
+                $lampiranPaths[] = 'lampiran_pengumuman/' . $filename;
+            }
+        }
+
+        $pengumuman = Pengumuman::create([
+            'judul_pengumuman' => $request->judul_pengumuman,
+            'deskripsi_pengumuman' => $request->deskripsi_pengumuman,
+            'lampiran' => count($lampiranPaths) > 0 ? json_encode($lampiranPaths) : null,
+        ]);
+
+        return new PengumumanResource(true, "Data Pengumuman Berhasil ditambahkan", $pengumuman);
+    }
+
+
+
+    public function show($id)
+    {
+        //find post by ID
+        $pengumuman = Pengumuman::find($id);
+
+        //return single post as a resource
+        return new PengumumanResource(true, 'Detail Data penguman!', $pengumuman);
+    }
+    public function update(Request $request, $id)
+    {
+        $pengumuman = Pengumuman::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'judul_pengumuman' => 'required|string',
+            'deskripsi_pengumuman' => 'required|string',
+            'lampiran.*' => 'file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $pengumuman->judul_pengumuman = $request->judul_pengumuman;
+        $pengumuman->deskripsi_pengumuman = $request->deskripsi_pengumuman;
+
+        // Tambahkan file baru ke lampiran lama tanpa menyimpan ke storage
+        if ($request->hasFile('lampiran')) {
+            $lampiranBaru = [];
+            foreach ($request->file('lampiran') as $file) {
+                $lampiranBaru[] = [
+                    'nama_file' => $file->getClientOriginalName(),
+                    'tipe' => $file->getClientMimeType(),
+                    'isi_base64' => base64_encode(file_get_contents($file)),
+                ];
+            }
+
+            $lampiranLama = json_decode($pengumuman->lampiran, true) ?? [];
+            $pengumuman->lampiran = json_encode(array_merge($lampiranLama, $lampiranBaru));
+        }
+
+        $pengumuman->save();
+
+        return new PengumumanResource(true, 'Data Pengumuman berhasil diperbarui', $pengumuman);
+    }
+
+
+    public function destroy($id)
+    {
+        $pengumuman = Pengumuman::find($id);
+
+        if (!$pengumuman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Pengumuman tidak ditemukan',
+            ], 404);
+        }
+
+        $pengumuman->delete();
+
+        return new PengumumanResource(true, 'Data Pengumuman berhasil dihapus', null);
+    }
+}
