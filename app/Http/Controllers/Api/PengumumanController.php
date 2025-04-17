@@ -6,6 +6,7 @@ use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ApiResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\PengumumanResource;
@@ -16,7 +17,7 @@ class PengumumanController extends Controller
     {
         $pengumuman = Pengumuman::latest()->get();
 
-        return new PengumumanResource(true, "List Data Pengumuman", $pengumuman);
+        return new ApiResource(true, "List Data Pengumuman", $pengumuman);
     }
 
     public function getLampiran($id, $filename)
@@ -66,7 +67,7 @@ class PengumumanController extends Controller
             'lampiran' => count($lampiranPaths) > 0 ? json_encode($lampiranPaths) : null,
         ]);
 
-        return new PengumumanResource(true, "Data Pengumuman Berhasil ditambahkan", $pengumuman);
+        return new ApiResource(true, "Data Pengumuman Berhasil ditambahkan", $pengumuman);
     }
 
 
@@ -77,7 +78,7 @@ class PengumumanController extends Controller
         $pengumuman = Pengumuman::find($id);
 
         //return single post as a resource
-        return new PengumumanResource(true, 'Detail Data penguman!', $pengumuman);
+        return new ApiResource(true, 'Detail Data penguman!', $pengumuman);
     }
     public function update(Request $request, $id)
     {
@@ -113,7 +114,7 @@ class PengumumanController extends Controller
 
         $pengumuman->save();
 
-        return new PengumumanResource(true, 'Data Pengumuman berhasil diperbarui', $pengumuman);
+        return new ApiResource(true, 'Data Pengumuman berhasil diperbarui', $pengumuman);
     }
 
 
@@ -130,6 +131,6 @@ class PengumumanController extends Controller
 
         $pengumuman->delete();
 
-        return new PengumumanResource(true, 'Data Pengumuman berhasil dihapus', null);
+        return new ApiResource(true, 'Data Pengumuman berhasil dihapus', null);
     }
 }
