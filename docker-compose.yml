@@ -1,0 +1,36 @@
+services:
+    laravel_app:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        container_name: laravel_app
+        ports:
+            - "8001:8001"
+        volumes:
+            - ./:/var/www/html # Memetakan folder laravel ke dalam container
+        networks:
+            - laravel_network
+        depends_on:
+            - host_mariadb
+
+    host_mariadb:
+        image: mariadb:latest
+        container_name: mariadb_container
+        environment:
+            MYSQL_ROOT_PASSWORD: root_password
+            MYSQL_DATABASE: si_ppkha_mic
+            MYSQL_USER: laravel_user
+            MYSQL_PASSWORD: laravel_password
+        ports:
+            - "3310:3306" # Membuka port 3310 agar database dapat diakses dari luar
+        volumes:
+            - db_data:/var/lib/mysql
+        networks:
+            - laravel_network
+
+volumes:
+    db_data:
+
+networks:
+    laravel_network:
+        driver: bridge
