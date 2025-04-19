@@ -4,6 +4,7 @@
 /public/hot
 /public/storage
 /public/lampiran_pengumuman/
+/public/gambar_berita/
 /storage/*.key
 /storage/pail
 /vendor
