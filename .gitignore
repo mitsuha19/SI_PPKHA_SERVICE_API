@@ -5,6 +5,7 @@
 /public/storage
 /public/lampiran_pengumuman/
 /public/gambar_berita/
+/public/gambar_artikel/
 /storage/*.key
 /storage/pail
 /vendor
