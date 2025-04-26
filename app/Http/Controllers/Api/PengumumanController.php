@@ -88,8 +88,16 @@ class PengumumanController extends Controller
         //return single post as a resource
         return new ApiResource(true, 'Detail Data penguman!', $pengumuman);
     }
+
     public function update(Request $request, $id)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $pengumuman = Pengumuman::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -107,27 +115,32 @@ class PengumumanController extends Controller
 
         // Tambahkan file baru ke lampiran lama tanpa menyimpan ke storage
         if ($request->hasFile('lampiran')) {
-            $lampiranBaru = [];
+            $lampiranPaths = [];
             foreach ($request->file('lampiran') as $file) {
-                $lampiranBaru[] = [
-                    'nama_file' => $file->getClientOriginalName(),
-                    'tipe' => $file->getClientMimeType(),
-                    'isi_base64' => base64_encode(file_get_contents($file)),
-                ];
+                $filename = uniqid() . '_' . $file->getClientOriginalName();
+                $path = $file->move(public_path('lampiran_pengumuman'), $filename);
+                $lampiranPaths[] = 'lampiran_pengumuman/' . $filename;
             }
-
-            $lampiranLama = json_decode($pengumuman->lampiran, true) ?? [];
-            $pengumuman->lampiran = json_encode(array_merge($lampiranLama, $lampiranBaru));
+            $pengumuman->lampiran = json_encode($lampiranPaths);
         }
 
+
+        // Simpan perubahan pengumuman
         $pengumuman->save();
 
+        // Return response sukses
         return new ApiResource(true, 'Data Pengumuman berhasil diperbarui', $pengumuman);
     }
 
-
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];  // role dari token
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $pengumuman = Pengumuman::find($id);
 
         if (!$pengumuman) {
@@ -136,7 +149,6 @@ class PengumumanController extends Controller
                 'message' => 'Data Pengumuman tidak ditemukan',
             ], 404);
         }
-
         $pengumuman->delete();
 
         return new ApiResource(true, 'Data Pengumuman berhasil dihapus', null);
