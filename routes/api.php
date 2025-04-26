@@ -17,7 +17,16 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 
 Route::get('/external-token', [AuthController::class, 'getExternalApiToken']);
 
-Route::apiResource('/pengumuman', PengumumanController::class);
+// Route::apiResource('/pengumuman', PengumumanController::class);
+
+Route::get('pengumuman',   [PengumumanController::class, 'index']);
+Route::get('pengumuman/{id}', [PengumumanController::class, 'show']);
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::post('pengumuman',    [PengumumanController::class, 'store']);
+    Route::put('pengumuman/{id}', [PengumumanController::class, 'update']);
+    Route::delete('pengumuman/{id}', [PengumumanController::class, 'destroy']);
+});
 
 Route::apiResource('/berita', BeritaController::class);
 Route::get('/gambar/{id}/{filename}', [BeritaController::class, 'getGambar']);

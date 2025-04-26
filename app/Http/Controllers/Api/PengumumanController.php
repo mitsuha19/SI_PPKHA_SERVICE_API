@@ -41,6 +41,14 @@ class PengumumanController extends Controller
 
     public function store(Request $request)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $userId = $claims['sub'];   // id user dari token
+        $role   = $claims['role'];  // role dari token
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'judul_pengumuman' => 'required|string',
             'deskripsi_pengumuman' => 'required|string',
