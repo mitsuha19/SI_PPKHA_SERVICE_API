@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ArtikelController;
 use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\BeritaController;
+use App\Http\Controllers\Api\PerusahaanController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,3 +46,5 @@ Route::get('/gambar/{id}/{filename}', [ArtikelController::class, 'getGambar']);
 // Route::get('/artikel', [ArtikelController::class, 'index']);
 // Route::get('/artikel/{id}', [ArtikelController::class, 'show']);
 // Route::post('/artikel', [ArtikelController::class, 'store']);
+
+Route::apiResource('/perusahaan', PerusahaanController::class);
