@@ -59,6 +59,14 @@ class BeritaController extends Controller
 
 public function store(Request $request)
 {
+    $claims = $request->attributes->get('jwt_claims');
+    $userId = $claims['sub'];   // id user dari token
+    $role   = $claims['role'];  // role dari token
+
+    if ($role !== 'admin') {
+        return response()->json(['error' => 'Forbidden'], 403);
+    }
+
     $validator = Validator::make($request->all(), [
         'judul_berita' => 'required|string',
         'deskripsi_berita' => 'required|string',
@@ -68,8 +76,6 @@ public function store(Request $request)
     if ($validator->fails()) {
         return response()->json($validator->errors(), 422);
     }
-
-    $validatedData = $validator->validated();
 
     $gambarPaths = [];
 
@@ -82,10 +88,9 @@ public function store(Request $request)
     }
 
 
-
     $berita = Berita::create([
-        'judul_berita' => $validatedData['judul_berita'],
-        'deskripsi_berita' => $validatedData['deskripsi_berita'],
+        'judul_berita' => $request->judul_berita,
+        'deskripsi_berita' => $request->deskripsi_berita,
         'gambar' => count($gambarPaths) > 0 ? json_encode($gambarPaths) : null, // pastikan kolom gambar bertipe json/text
     ]);
 
@@ -112,27 +117,24 @@ public function update(Request $request, $id)
     $berita->judul_berita = $request->judul_berita;
     $berita->deskripsi_berita = $request->deskripsi_berita;
 
-
-
     if ($request->hasFile('gambar')) {
-        $gambarBaru = [];
+        $gambarPaths = [];
+
         foreach ($request->file('gambar') as $gambar) {
-            $gambarBaru[] = [
-                'nama_gambar' => $gambar->getClientOriginalName(),
-                'tipe' => $gambar->getClientMimeType(),
-                'isi_base64' => base64_encode(file_get_contents($gambar)),
-            ];
+            $filename = uniqid() . '_' . $gambar->getClientOriginalName();
+            $gambar->move(public_path('gambar_berita'), $filename);
+            $gambarPaths[] = 'gambar_berita/' . $filename;
         }
 
         $gambarLama = json_decode($berita->gambar, true) ?? [];
-        $berita->gambar = json_encode(array_merge($gambarLama, $gambarBaru));
+        $berita->gambar = json_encode(array_merge($gambarLama, $gambarPaths));
     }
 
-    // Update data
     $berita->save();
 
-    return new ApiResource(true, 'Data  berhasil diperbarui', $berita);
+    return new ApiResource(true, 'Data berhasil diperbarui', $berita);
 }
+
 
 
 public function destroy($id)

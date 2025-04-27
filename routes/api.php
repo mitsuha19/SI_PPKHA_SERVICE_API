@@ -32,6 +32,13 @@ Route::apiResource('/berita', BeritaController::class);
 Route::get('/gambar/{id}/{filename}', [BeritaController::class, 'getGambar']);
 Route::get('/lampiran/{id}/{filename}', [PengumumanController::class, 'getLampiran']);
 
+Route::middleware('jwt.auth')->group(function () {
+    Route::post('berita',    [BeritaController::class, 'store']);
+    Route::put('berita/{id}', [BeritaController::class, 'update']);
+    Route::delete('berita/{id}', [BeritaController::class, 'destroy']);
+    Route::get('/gambar/{id}/{filename}', [BeritaController::class, 'getGambar']);
+});
+
 Route::apiResource('/artikel', ArtikelController::class);
 Route::get('/gambar/{id}/{filename}', [ArtikelController::class, 'getGambar']);
 
