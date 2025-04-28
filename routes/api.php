@@ -29,7 +29,9 @@ Route::middleware('jwt.auth')->group(function () {
     Route::delete('pengumuman/{id}', [PengumumanController::class, 'destroy']);
 });
 
-Route::apiResource('/berita', BeritaController::class);
+//Route::apiResource('/berita', BeritaController::class);
+Route::get('berita', [BeritaController::class, 'index']);
+Route::get('berita/{id}', [BeritaController::class, 'show']);
 Route::get('/gambar/{id}/{filename}', [BeritaController::class, 'getGambar']);
 Route::get('/lampiran/{id}/{filename}', [PengumumanController::class, 'getLampiran']);
 

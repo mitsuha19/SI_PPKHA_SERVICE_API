@@ -24,18 +24,7 @@ class BeritaController extends Controller
     {
         $berita = Berita::find($id);
 
-        if (!$berita) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Berita tidak ditemukan',
-            ], 404);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Detail berita',
-            'data' => $berita
-        ], 200);
+        return new ApiResource(true, 'Detail Data berita!', $berita);
     }
 
     public function getGambar($id, $filename)
@@ -102,6 +91,13 @@ public function store(Request $request)
 
 public function update(Request $request, $id)
 {
+    $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+        
     $berita = Berita::findOrFail($id);
 
     $validator = Validator::make($request->all(), [
@@ -137,8 +133,15 @@ public function update(Request $request, $id)
 
 
 
-public function destroy($id)
+public function destroy(Request $request, $id)
 {
+    $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];  // role dari token
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
     $berita = Berita::find($id);
 
     if (!$berita) {
