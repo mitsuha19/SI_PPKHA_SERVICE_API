@@ -25,6 +25,14 @@ class ArtikelController extends Controller
      */
     public function store(Request $request)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $userId = $claims['sub'];   // id user dari token
+        $role   = $claims['role'];  // role dari token
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'judul_artikel' => 'required|string',
             'deskripsi_artikel' => 'required|string',
@@ -36,7 +44,6 @@ class ArtikelController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $validatedData = $validator->validated();
 
         $gambarPaths = [];
 
@@ -49,10 +56,10 @@ class ArtikelController extends Controller
         }
 
         $artikel = Artikel::create([
-            'judul_artikel' => $validatedData['judul_artikel'],
-            'deskripsi_artikel' => $validatedData['deskripsi_artikel'],
-            'sumber_artikel' => $validatedData['sumber_artikel'] ?? null,
-            'gambar' => count($gambarPaths) > 0 ? json_encode($gambarPaths) : null,
+            'judul_artikel' => $request->judul_artikel,
+            'deskripsi_artikel' => $request->deskripsi_artikel,
+            'sumber_artikel' => $request->sumber_artikel ?? null,
+            'gambar' => count($gambarPaths) > 0 ? json_encode($gambarPaths) : null, // pastikan kolom gambar bertipe json/text
         ]);
 
         return new ApiResource(true, 'Sukses menambahkan data', $artikel);
@@ -94,7 +101,7 @@ class ArtikelController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Artikel tidak ditemukan'
-            ]);
+            ], 404);
         }
     }
 

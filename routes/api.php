@@ -42,11 +42,18 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('/gambar/{id}/{filename}', [BeritaController::class, 'getGambar']);
 });
 
-Route::apiResource('/artikel', ArtikelController::class);
+
+//Route::apiResource('/berita', BeritaController::class);
+Route::get('artikel', [ArtikelController::class, 'index']);
+Route::get('artikel/{id}', [ArtikelController::class, 'show']);
 Route::get('/gambar/{id}/{filename}', [ArtikelController::class, 'getGambar']);
 
-// Route::get('/artikel', [ArtikelController::class, 'index']);
-// Route::get('/artikel/{id}', [ArtikelController::class, 'show']);
-// Route::post('/artikel', [ArtikelController::class, 'store']);
+Route::middleware('jwt.auth')->group(function () {
+    Route::post('artikel',    [ArtikelController::class, 'store']);
+    Route::put('artikel/{id}', [ArtikelController::class, 'update']);
+    Route::delete('artikel/{id}', [ArtikelController::class, 'destroy']);
+    Route::get('/gambar/{id}/{filename}', [ArtikelController::class, 'getGambar']);
+});
+
 
 Route::apiResource('/perusahaan', PerusahaanController::class);
