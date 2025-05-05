@@ -19,6 +19,34 @@ class ArtikelController extends Controller
         $artikels = Artikel::latest()->get();
         return new ApiResource(true, 'List Data Artikel', $artikels);
     }
+    
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $artikels = Artikel::find($id);
+        return new ApiResource(true, 'Detail Data artikel!', $artikels);
+    }
+
+    public function getGambar($id, $filename)
+    {
+        $artikels = Artikel::findOrFail($id);
+        $gambar = json_decode($artikels->gambar, true) ?? [];
+
+        foreach ($gambar as $file) {
+            if ($file['nama_file'] === $filename) {
+                $decoded = base64_decode($file['isi_base64']);
+
+                return response($decoded, 200)
+                    ->header('Content-Type', $file['tipe'])
+                    ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
+            }
+        }
+
+        return response()->json(['message' => 'File tidak ditemukan'], 404);
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -48,9 +76,9 @@ class ArtikelController extends Controller
         $gambarPaths = [];
 
         if ($request->hasFile('gambar')) {
-            foreach ($request->file('gambar') as $file) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('gambar_artikel'), $filename);
+            foreach ($request->file('gambar') as $gambar) {
+                $filename = uniqid() . '_' . $gambar->getClientOriginalName();
+                $gambar->move(public_path('gambar_artikel'), $filename);
                 $gambarPaths[] = 'gambar_artikel/' . $filename;
             }
         }
@@ -65,51 +93,18 @@ class ArtikelController extends Controller
         return new ApiResource(true, 'Sukses menambahkan data', $artikel);
     }
 
-
-    public function getGambar($id, $filename)
-    {
-        $artikels = Artikel::findOrFail($id);
-        $gambar = json_decode($artikels->gambar, true) ?? [];
-
-        foreach ($gambar as $file) {
-            if ($file['nama_file'] === $filename) {
-                $decoded = base64_decode($file['isi_base64']);
-
-                return response($decoded, 200)
-                    ->header('Content-Type', $file['tipe'])
-                    ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
-            }
-        }
-
-        return response()->json(['message' => 'File tidak ditemukan'], 404);
-    }
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show($id)
-    {
-        $artikels = Artikel::find($id);
-        if($artikels){
-            return response()->json([
-                'status' => true,
-                'message' => 'Artikel ditemukan',
-                'data' => $artikels
-            ], 200);
-        } else {
-            return response()->json([
-                'status' => false,
-                'message' => 'Artikel tidak ditemukan'
-            ], 404);
-        }
-    }
-
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $artikel = Artikel::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -129,9 +124,9 @@ class ArtikelController extends Controller
 
         if ($request->hasFile('gambar')) {
             $gambarPaths = [];
-            foreach ($request->file('gambar') as $file) {
-                $filename = uniqid() . '_' . $file->getClientOriginalName();
-                $file->move(public_path('gambar_artikel'), $filename);
+            foreach ($request->file('gambar') as $gambar) {
+                $filename = uniqid() . '_' . $gambar->getClientOriginalName();
+                $gambar->move(public_path('gambar_artikel'), $filename);
                 $gambarPaths[] = 'gambar_artikel/' . $filename;
             }
 
@@ -149,8 +144,15 @@ class ArtikelController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request, $id)
     {
+        $claims = $request->attributes->get('jwt_claims');
+        $role = $claims['role'];  // role dari token
+
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $artikels = Artikel::find($id);
 
         if (!$artikels) {
