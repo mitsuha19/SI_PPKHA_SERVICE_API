@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
 use App\Models\Lowongan;
 use App\Models\Perusahaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ApiResource;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 
 class LowonganController extends Controller
@@ -186,20 +187,20 @@ class LowonganController extends Controller
 
     public function getLogoPerusahaan($id)
     {
-        \Log::info('Fetching logo for perusahaan_id: ' . $id);
+        Log::info('Fetching logo for perusahaan_id: ' . $id);
 
         $perusahaan = Perusahaan::findOrFail($id);
 
         if (!$perusahaan || !$perusahaan->logo) {
-            \Log::error('Logo not found for perusahaan_id: ' . $id);
+            Log::error('Logo not found for perusahaan_id: ' . $id);
             return response()->json(['message' => 'Logo tidak ditemukan'], 404);
         }
 
         $logoPath = public_path($perusahaan->logo);
-        \Log::info('Logo path: ' . $logoPath);
+        Log::info('Logo path: ' . $logoPath);
 
         if (!file_exists($logoPath)) {
-            \Log::error('Logo file does not exist at path: ' . $logoPath);
+            Log::error('Logo file does not exist at path: ' . $logoPath);
             return response()->json(['message' => 'File tidak ditemukan'], 404);
         }
 
@@ -207,7 +208,7 @@ class LowonganController extends Controller
         $content = file_get_contents($logoPath);
         $filename = basename($logoPath);
 
-        \Log::info('Successfully fetched logo for perusahaan_id: ' . $id);
+        Log::info('Successfully fetched logo for perusahaan_id: ' . $id);
         return response($content, 200)
             ->header('Content-Type', $mimeType)
             ->header('Content-Disposition', 'inline; filename="' . $filename . '"');
