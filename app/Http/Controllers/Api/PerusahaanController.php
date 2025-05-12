@@ -68,8 +68,8 @@ class PerusahaanController extends Controller
 
   public function update(Request $request, $id)
   {
-    \Log::info('Request files:', $request->allFiles());
-    \Log::info('Request data:', $request->all());
+    Log::info('Request files:', $request->allFiles());
+    Log::info('Request data:', $request->all());
     $claims = $request->attributes->get('jwt_claims');
     $role = $claims['role'] ?? null;
 
@@ -110,7 +110,7 @@ class PerusahaanController extends Controller
         $logo = $request->file('logo');
 
         // Log informasi file untuk debugging
-        \Log::info('Logo File Received:', [
+        Log::info('Logo File Received:', [
           'name' => $logo->getClientOriginalName(),
           'size' => $logo->getSize(),
           'mime' => $logo->getMimeType(),
@@ -139,7 +139,7 @@ class PerusahaanController extends Controller
         $perusahaan->logo = 'logos/' . $filename;
         $perusahaan->save();
 
-        \Log::info('Logo Saved:', ['path' => $path]);
+        Log::info('Logo Saved:', ['path' => $path]);
       }
 
       if ($hasLogoUpdate || !empty($updateData)) {
@@ -152,11 +152,11 @@ class PerusahaanController extends Controller
       return new ApiResource(true, 'Data Perusahaan Berhasil Diperbarui', $perusahaan->fresh());
     } catch (\Illuminate\Validation\ValidationException $e) {
       DB::rollBack();
-      \Log::error('Validation Error: ' . $e->getMessage(), ['errors' => $e->errors()]);
+      Log::error('Validation Error: ' . $e->getMessage(), ['errors' => $e->errors()]);
       return new ApiResource(false, 'Validasi gagal: ' . implode(', ', $e->errors()), null);
     } catch (\Exception $e) {
       DB::rollBack();
-      \Log::error('Update Perusahaan Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+      Log::error('Update Perusahaan Error: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
       return new ApiResource(false, 'Terjadi kesalahan saat memperbarui perusahaan: ' . $e->getMessage(), null);
     }
   }
@@ -179,21 +179,21 @@ class PerusahaanController extends Controller
 
   public function getLogo($id)
   {
-    \Log::info('Fetching logo for perusahaan_id: ' . $id);
+    Log::info('Fetching logo for perusahaan_id: ' . $id);
 
     $perusahaan = Perusahaan::find($id);
 
     if (!$perusahaan || !$perusahaan->logo) {
-      \Log::error('Logo not found for perusahaan_id: ' . $id);
+      Log::error('Logo not found for perusahaan_id: ' . $id);
       return response()->json(['message' => 'Logo tidak ditemukan'], 404);
     }
 
     // Use storage_path since logos are stored with store('logos', 'public')
     $logoPath = storage_path('app/public/' . $perusahaan->logo);
-    \Log::info('Logo path: ' . $logoPath);
+    Log::info('Logo path: ' . $logoPath);
 
     if (!file_exists($logoPath)) {
-      \Log::error('Logo file does not exist at path: ' . $logoPath);
+      Log::error('Logo file does not exist at path: ' . $logoPath);
       return response()->json(['message' => 'File tidak ditemukan'], 404);
     }
 
@@ -201,7 +201,7 @@ class PerusahaanController extends Controller
     $content = file_get_contents($logoPath);
     $filename = basename($logoPath);
 
-    \Log::info('Successfully fetched logo for perusahaan_id: ' . $id);
+    Log::info('Successfully fetched logo for perusahaan_id: ' . $id);
     return response($content, 200)
       ->header('Content-Type', $mimeType)
       ->header('Content-Disposition', 'inline; filename="' . $filename . '"')

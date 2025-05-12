@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\ArtikelController;
-use App\Http\Controllers\Api\PengumumanController;
-use App\Http\Controllers\Api\BeritaController;
-use App\Http\Controllers\Api\PerusahaanController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\LowonganController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\BerandaController;
+use App\Http\Controllers\Api\BeritaController;
+use App\Http\Controllers\Api\ArtikelController;
+use App\Http\Controllers\Api\LowonganController;
+use App\Http\Controllers\Api\PengumumanController;
+use App\Http\Controllers\Api\PerusahaanController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -45,7 +46,6 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('/lowongan', [LowonganController::class, 'store']);
     Route::put('/lowongan/{id}', [LowonganController::class, 'update']);
     Route::delete('/lowongan/{id}', [LowonganController::class, 'destroy']);
-
 });
 
 Route::get('/lowongan', [LowonganController::class, 'index']);
@@ -71,3 +71,10 @@ Route::middleware('jwt.auth')->group(function () {
 Route::get('/perusahaan', [PerusahaanController::class, 'index']);
 Route::get('/perusahaan/{id}', [PerusahaanController::class, 'show']);
 Route::get('/perusahaan/{id}/logo', [PerusahaanController::class, 'getLogo']);
+
+
+Route::get('/beranda', [BerandaController::class, 'index']);
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::put('/beranda', [BerandaController::class, 'update']);
+});

@@ -19,7 +19,7 @@ class ArtikelController extends Controller
         $artikels = Artikel::latest()->get();
         return new ApiResource(true, 'List Data Artikel', $artikels);
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -165,5 +165,5 @@ class ArtikelController extends Controller
         $artikels->delete();
 
         return new ApiResource(true, 'Artikel  berhasil dihapus', null);
-        }
+    }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -44,116 +45,115 @@ class BeritaController extends Controller
 
         return response()->json(['message' => 'File tidak ditemukan'], 404);
     }
-    
 
-public function store(Request $request)
-{
-    $claims = $request->attributes->get('jwt_claims');
-    $userId = $claims['sub'];   // id user dari token
-    $role   = $claims['role'];  // role dari token
 
-    if ($role !== 'admin') {
-        return response()->json(['error' => 'Forbidden'], 403);
-    }
+    public function store(Request $request)
+    {
+        $claims = $request->attributes->get('jwt_claims');
+        $userId = $claims['sub'];
+        $role   = $claims['role'];
 
-    $validator = Validator::make($request->all(), [
-        'judul_berita' => 'required|string',
-        'deskripsi_berita' => 'required|string',
-        'gambar.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json($validator->errors(), 422);
-    }
-
-    $gambarPaths = [];
-
-    if ($request->hasFile('gambar')) {
-        foreach ($request->file('gambar') as $gambar) {
-            $filename = uniqid() . '_' . $gambar->getClientOriginalName();
-            $path = $gambar->move(public_path('gambar_berita'), $filename); // ⬅️ langsung ke public/
-            $gambarPaths[] = 'gambar_berita/' . $filename; // buat URL gambar
+        if ($role !== 'admin') {
+            return response()->json(['error' => 'Forbidden'], 403);
         }
+
+        $validator = Validator::make($request->all(), [
+            'judul_berita' => 'required|string',
+            'deskripsi_berita' => 'required|string',
+            'gambar.*' => 'nullable|file|mimes:jpg,jpeg,png',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        $gambarPaths = [];
+
+        if ($request->hasFile('gambar')) {
+            foreach ($request->file('gambar') as $gambar) {
+                $filename = uniqid() . '_' . $gambar->getClientOriginalName();
+                $path = $gambar->move(public_path('gambar_berita'), $filename);
+                $gambarPaths[] = 'gambar_berita/' . $filename;
+            }
+        }
+
+
+        $berita = Berita::create([
+            'judul_berita' => $request->judul_berita,
+            'deskripsi_berita' => $request->deskripsi_berita,
+            'gambar' => count($gambarPaths) > 0 ? json_encode($gambarPaths) : null,
+        ]);
+
+        return new ApiResource(true, 'Data Berhasil Disimpan', $berita);
     }
 
 
-    $berita = Berita::create([
-        'judul_berita' => $request->judul_berita,
-        'deskripsi_berita' => $request->deskripsi_berita,
-        'gambar' => count($gambarPaths) > 0 ? json_encode($gambarPaths) : null, // pastikan kolom gambar bertipe json/text
-    ]);
-
-    return new ApiResource(true, 'Data Berhasil Disimpan', $berita);
-}
-
-    
 
 
-public function update(Request $request, $id)
-{
-    $claims = $request->attributes->get('jwt_claims');
+    public function update(Request $request, $id)
+    {
+        $claims = $request->attributes->get('jwt_claims');
         $role = $claims['role'];
 
         if ($role !== 'admin') {
             return response()->json(['error' => 'Forbidden'], 403);
         }
-        
-    $berita = Berita::findOrFail($id);
 
-    $validator = Validator::make($request->all(), [
-        'judul_berita' => 'required|string',
-        'deskripsi_berita' => 'required|string',
-        'gambar.*' => 'nullable|file|mimes:jpg,jpeg,png',
-    ]);
+        $berita = Berita::findOrFail($id);
 
-    if ($validator->fails()) {
-        return response()->json($validator->errors(), 422);
-    }
+        $validator = Validator::make($request->all(), [
+            'judul_berita' => 'required|string',
+            'deskripsi_berita' => 'required|string',
+            'gambar.*' => 'nullable|file|mimes:jpg,jpeg,png',
+        ]);
 
-    $berita->judul_berita = $request->judul_berita;
-    $berita->deskripsi_berita = $request->deskripsi_berita;
-
-    if ($request->hasFile('gambar')) {
-        $gambarPaths = [];
-
-        foreach ($request->file('gambar') as $gambar) {
-            $filename = uniqid() . '_' . $gambar->getClientOriginalName();
-            $gambar->move(public_path('gambar_berita'), $filename);
-            $gambarPaths[] = 'gambar_berita/' . $filename;
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
         }
 
-        $gambarLama = json_decode($berita->gambar, true) ?? [];
-        $berita->gambar = json_encode(array_merge($gambarLama, $gambarPaths));
+        $berita->judul_berita = $request->judul_berita;
+        $berita->deskripsi_berita = $request->deskripsi_berita;
+
+        if ($request->hasFile('gambar')) {
+            $gambarPaths = [];
+
+            foreach ($request->file('gambar') as $gambar) {
+                $filename = uniqid() . '_' . $gambar->getClientOriginalName();
+                $gambar->move(public_path('gambar_berita'), $filename);
+                $gambarPaths[] = 'gambar_berita/' . $filename;
+            }
+
+            $gambarLama = json_decode($berita->gambar, true) ?? [];
+            $berita->gambar = json_encode(array_merge($gambarLama, $gambarPaths));
+        }
+
+        $berita->save();
+
+        return new ApiResource(true, 'Data berhasil diperbarui', $berita);
     }
 
-    $berita->save();
-
-    return new ApiResource(true, 'Data berhasil diperbarui', $berita);
-}
 
 
-
-public function destroy(Request $request, $id)
-{
-    $claims = $request->attributes->get('jwt_claims');
+    public function destroy(Request $request, $id)
+    {
+        $claims = $request->attributes->get('jwt_claims');
         $role = $claims['role'];  // role dari token
 
         if ($role !== 'admin') {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
-    $berita = Berita::find($id);
+        $berita = Berita::find($id);
 
-    if (!$berita) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Berita tidak ditemukan'
-        ], 404);
+        if (!$berita) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Berita tidak ditemukan'
+            ], 404);
+        }
+
+        $berita->delete();
+
+        return new ApiResource(true, 'Data  berhasil dihapus', null);
     }
-
-    $berita->delete();
-
-    return new ApiResource(true, 'Data  berhasil dihapus', null);
 }
-}
-
