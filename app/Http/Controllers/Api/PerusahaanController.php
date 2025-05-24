@@ -20,42 +20,42 @@ class PerusahaanController extends Controller
     return new ApiResource(true, "List Data Perusahaan", $perusahaan);
   }
 
-  // public function store(Request $request)
-  // {
-  //   // Validasi input
-  //   $validator = Validator::make($request->all(), [
-  //     'namaPerusahaan' => 'required|string',
-  //     'lokasiPerusahaan' => 'required|string',
-  //     'websitePerusahaan' => 'required|url',
-  //     'industriPerusahaan' => 'required|string',
-  //     'deskripsiPerusahaan' => 'nullable|string',
-  //     'logo' => 'nullable|file|mimes:jpg,jpeg,png'
-  //   ]);
+  public function store(Request $request)
+  {
+    // Validasi input
+    $validator = Validator::make($request->all(), [
+      'namaPerusahaan' => 'required|string',
+      'lokasiPerusahaan' => 'required|string',
+      'websitePerusahaan' => 'required|url',
+      'industriPerusahaan' => 'required|string',
+      'deskripsiPerusahaan' => 'nullable|string',
+      'logo' => 'nullable|file|mimes:jpg,jpeg,png'
+    ]);
 
-  //   if ($validator->fails()) {
-  //     return response()->json($validator->errors(), 422);
-  //   }
+    if ($validator->fails()) {
+      return response()->json($validator->errors(), 422);
+    }
 
-  //   // Proses upload logo
-  //   $logoPath = null;
-  //   if ($request->hasFile('logo')) {
-  //     $filename = uniqid() . '_' . $request->file('logo')->getClientOriginalName();
-  //     $path = $request->file('logo')->move(public_path('logo_perusahaan'), $filename);
-  //     $logoPath = 'logo_perusahaan/' . $filename;
-  //   }
+    // Proses upload logo
+    $logoPath = null;
+    if ($request->hasFile('logo')) {
+      $filename = uniqid() . '_' . $request->file('logo')->getClientOriginalName();
+      $path = $request->file('logo')->move(public_path('logo_perusahaan'), $filename);
+      $logoPath = 'logo_perusahaan/' . $filename;
+    }
 
-  //   // Simpan data perusahaan ke database
-  //   $perusahaan = Perusahaan::create([
-  //     'namaPerusahaan' => $request->namaPerusahaan,
-  //     'lokasiPerusahaan' => $request->lokasiPerusahaan,
-  //     'websitePerusahaan' => $request->websitePerusahaan,
-  //     'industriPerusahaan' => $request->industriPerusahaan,
-  //     'deskripsiPerusahaan' => $request->deskripsiPerusahaan,
-  //     'logo' => $logoPath,
-  //   ]);
+    // Simpan data perusahaan ke database
+    $perusahaan = Perusahaan::create([
+      'namaPerusahaan' => $request->namaPerusahaan,
+      'lokasiPerusahaan' => $request->lokasiPerusahaan,
+      'websitePerusahaan' => $request->websitePerusahaan,
+      'industriPerusahaan' => $request->industriPerusahaan,
+      'deskripsiPerusahaan' => $request->deskripsiPerusahaan,
+      'logo' => $logoPath,
+    ]);
 
-  //   return new ApiResource(true, "Data Perusahaan Berhasil Ditambahkan", $perusahaan);
-  // }
+    return new ApiResource(true, "Data Perusahaan Berhasil Ditambahkan", $perusahaan);
+  }
 
   public function show($id)
   {
