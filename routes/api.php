@@ -3,10 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\BerandaController;
 use App\Http\Controllers\Api\BeritaController;
 use App\Http\Controllers\Api\ArtikelController;
+use App\Http\Controllers\Api\BerandaController;
 use App\Http\Controllers\Api\LowonganController;
+use App\Http\Controllers\api\MobileTcController;
 use App\Http\Controllers\Api\PengumumanController;
 use App\Http\Controllers\Api\PerusahaanController;
 
@@ -66,6 +67,12 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('/perusahaan', [PerusahaanController::class, 'store']);
     Route::put('/perusahaan/{id}', [PerusahaanController::class, 'update']);
     Route::delete('/perusahaan/{id}', [PerusahaanController::class, 'destroy']);
+
+    Route::get('mobiletc',          [MobileTcController::class, 'index']);
+    Route::post('mobiletc',          [MobileTcController::class, 'store']);
+    Route::get('mobiletc/{id}',     [MobileTcController::class, 'show']);
+    Route::put('mobiletc/{id}',     [MobileTcController::class, 'update']);
+    Route::delete('mobiletc/{id}',     [MobileTcController::class, 'destroy']);
 });
 
 Route::get('/perusahaan', [PerusahaanController::class, 'index']);
